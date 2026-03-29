@@ -9,9 +9,7 @@ function statement(invoice, plays) {
 
   for (let perf of invoice.performances) {
     // ボリューム特典の時のポイントを加算
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 喜劇の時は10人につき、さらにポイントを加算
-    if ("comedy" == playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+    volumeCredits += volumeCreditsFor(perf)
     // 注文の内訳を出力
     result += ` ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
@@ -46,6 +44,15 @@ function statement(invoice, plays) {
         throw new Error(`unknown type: ${playFor(aPerformance).type}`);
     }
     return result;
+  }
+
+  // 関数の抽出
+  // 余計なコメントアウトは関数の抽出に伴い削除
+  function volumeCreditsFor(aPerformance) {
+    let volumeCredits = 0;
+    volumeCredits += Math.max(aPerformance.audience - 30, 0);
+    if ("comedy" == playFor(aPerformance).type) volumeCredits += Math.floor(aPerformance.audience / 5);
+    return volumeCredits;
   }
 }
 

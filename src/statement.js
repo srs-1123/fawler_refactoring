@@ -8,15 +8,16 @@ function statement(invoice, plays) {
       minimumFractionDigits: 2}).format;
 
   for (let perf of invoice.performances) {
-    const play = playFor(perf);
-    let thisAmount = amountFor(perf, play);
+    // 変数のインライン化(playFor()を直接使う)
+    // const play = playFor(perf);
+    let thisAmount = amountFor(perf, playFor(perf));
 
     // ボリューム特典の時のポイントを加算
     volumeCredits += Math.max(perf.audience - 30, 0);
     // 喜劇の時は10人につき、さらにポイントを加算
-    if ("comedy" == play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" == playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
     // 注文の内訳を出力
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    result += ` ${playFor(perf).name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
   }
 

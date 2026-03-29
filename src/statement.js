@@ -8,9 +8,7 @@ function statement(invoice, plays) {
       minimumFractionDigits: 2}).format;
 
   for (let perf of invoice.performances) {
-    // 変数のインライン化(playFor()を直接使う)
-    // const play = playFor(perf);
-    let thisAmount = amountFor(perf, playFor(perf));
+    let thisAmount = amountFor(perf);
 
     // ボリューム特典の時のポイントを加算
     volumeCredits += Math.max(perf.audience - 30, 0);
@@ -31,9 +29,10 @@ function statement(invoice, plays) {
   }
 
   // 関数の抽出
-  function amountFor(aPerformance, play) {
+  function amountFor(aPerformance) {
     let result = 0; // 関数名で何を返すのかは伝わるので、結果はresultという変数名にする
-    switch (play.type) {
+    // 変数のインライン化(playFor()を直接使う)
+    switch (playFor(aPerformance).type) {
       case "tragedy":
         result = 40000;
         if (aPerformance.audience > 30) 
@@ -46,7 +45,7 @@ function statement(invoice, plays) {
         else result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`unknown type: ${play.type}`);
+        throw new Error(`unknown type: ${playFor(aPerformance).type}`);
     }
     return result;
   }

@@ -4,11 +4,14 @@ function statement(invoice, plays) {
   let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
-    // ボリューム特典の時のポイントを加算
-    volumeCredits += volumeCreditsFor(perf)
     // 注文の内訳を出力
     result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
+  }
+
+  for (let perf of invoice.performances) {
+    // ボリューム特典の時のポイントを加算
+    volumeCredits += volumeCreditsFor(perf)
   }
 
   result += `Amount owed is ${usd(totalAmount / 100)}\n`;

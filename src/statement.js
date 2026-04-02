@@ -20,7 +20,7 @@ function renderPlainText(data, invoice, plays) {
 
   for (let perf of data.performances) {
     // 注文の内訳を出力
-    result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+    result += ` ${perf.play.name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
   }
 
   result += `Amount owed is ${usd(totalAmount() / 100)}\n`;
@@ -35,16 +35,11 @@ function renderPlainText(data, invoice, plays) {
                           minimumFractionDigits: 2}).format(aNumber);
   }
 
-  // 問い合わせによる一時変数の置き換え
-  function playFor(aPerformance) {
-    return plays[aPerformance.playID];
-  }
-
   // 関数の抽出
   function amountFor(aPerformance) {
     let result = 0; // 関数名で何を返すのかは伝わるので、結果はresultという変数名にする
     // 変数のインライン化(playFor()を直接使う)
-    switch (playFor(aPerformance).type) {
+    switch (aPerformance.play.type) {
       case "tragedy":
         result = 40000;
         if (aPerformance.audience > 30) 
@@ -57,7 +52,7 @@ function renderPlainText(data, invoice, plays) {
         else result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`unknown type: ${playFor(aPerformance).type}`);
+        throw new Error(`unknown type: ${aPerformance.play.type}`);
     }
     return result;
   }
@@ -67,14 +62,14 @@ function renderPlainText(data, invoice, plays) {
   function volumeCreditsFor(aPerformance) {
     let volumeCredits = 0;
     volumeCredits += Math.max(aPerformance.audience - 30, 0);
-    if ("comedy" == playFor(aPerformance).type) volumeCredits += Math.floor(aPerformance.audience / 5);
+    if ("comedy" == aPerformance.play.type) volumeCredits += Math.floor(aPerformance.audience / 5);
     return volumeCredits;
   }
 
   // 関数の抽出
   function totalVolumeCredits() {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += volumeCreditsFor(perf)
     }
     return result;
@@ -82,7 +77,7 @@ function renderPlainText(data, invoice, plays) {
 
   function totalAmount() {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += amountFor(perf);
     }
     return result;

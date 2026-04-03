@@ -2,6 +2,8 @@ function statement(invoice, plays) {
   const statementData = {};
   statementData.customer = invoice.customer;
   statementData.performances = invoice.performances.map(enrichPerformance);
+  statementData.totalAmount = totalAmount(statementData);
+  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
   return renderPlainText(statementData, invoice, plays);
 
   function enrichPerformance(aPerformance) {
@@ -46,6 +48,23 @@ function statement(invoice, plays) {
     if ("comedy" == aPerformance.play.type) volumeCredits += Math.floor(aPerformance.audience / 5);
     return volumeCredits;
   }
+
+    // 関数の抽出
+  function totalVolumeCredits(data) {
+    let result = 0;
+    for (let perf of data.performances) {
+      result += perf.volumeCredits;
+    }
+    return result;
+  }
+
+  function totalAmount(data) {
+    let result = 0;
+    for (let perf of data.performances) {
+      result += perf.amount;
+    }
+    return result;
+  }
 }
 
 function renderPlainText(data, invoice, plays) {
@@ -56,8 +75,8 @@ function renderPlainText(data, invoice, plays) {
     result += ` ${perf.play.name}: ${usd(perf.amount / 100)} (${perf.audience} seats)\n`;
   }
 
-  result += `Amount owed is ${usd(totalAmount() / 100)}\n`;
-  result += `You earned ${totalVolumeCredits()} credits\n`;
+  result += `Amount owed is ${usd(data.totalAmount / 100)}\n`;
+  result += `You earned ${data.totalVolumeCredits} credits\n`;
   return result;
 
   // 関数の抽出 & 関数宣言の変更
@@ -66,23 +85,6 @@ function renderPlainText(data, invoice, plays) {
     return new Intl.NumberFormat("en-US",
                         { style: "currency", currency: "USD",
                           minimumFractionDigits: 2}).format(aNumber);
-  }
-
-  // 関数の抽出
-  function totalVolumeCredits() {
-    let result = 0;
-    for (let perf of data.performances) {
-      result += perf.volumeCredits;
-    }
-    return result;
-  }
-
-  function totalAmount() {
-    let result = 0;
-    for (let perf of data.performances) {
-      result += perf.amount;
-    }
-    return result;
   }
 }
 

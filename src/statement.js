@@ -43,7 +43,7 @@ function renderPlainText(data, invoice, plays) {
 
   for (let perf of data.performances) {
     // 注文の内訳を出力
-    result += ` ${perf.play.name}: ${usd(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+    result += ` ${perf.play.name}: ${usd(perf.amount / 100)} (${perf.audience} seats)\n`;
   }
 
   result += `Amount owed is ${usd(totalAmount() / 100)}\n`;
@@ -56,28 +56,6 @@ function renderPlainText(data, invoice, plays) {
     return new Intl.NumberFormat("en-US",
                         { style: "currency", currency: "USD",
                           minimumFractionDigits: 2}).format(aNumber);
-  }
-
-  // 関数の抽出
-  function amountFor(aPerformance) {
-    let result = 0; // 関数名で何を返すのかは伝わるので、結果はresultという変数名にする
-    // 変数のインライン化(playFor()を直接使う)
-    switch (aPerformance.play.type) {
-      case "tragedy":
-        result = 40000;
-        if (aPerformance.audience > 30) 
-          result += 1000 * (aPerformance.audience - 30);
-        break;
-      case "comedy":
-        result = 30000;
-        if (aPerformance.audience > 20) 
-          result += 500 * aPerformance.audience + 10000;
-        else result += 300 * aPerformance.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${aPerformance.play.type}`);
-    }
-    return result;
   }
 
   // 関数の抽出
@@ -101,7 +79,7 @@ function renderPlainText(data, invoice, plays) {
   function totalAmount() {
     let result = 0;
     for (let perf of data.performances) {
-      result += amountFor(perf);
+      result += perf.amount;
     }
     return result;
   }

@@ -7,11 +7,34 @@ function statement(invoice, plays) {
   function enrichPerformance(aPerformance) {
     const result = Object.assign({}, aPerformance);
     result.play = playFor(result);
+    result.amount = amountFor(result);
     return result;
   }
 
   function playFor(aPerformance) {
     return plays[aPerformance.playID];
+  }
+
+    // 関数の抽出
+  function amountFor(aPerformance) {
+    let result = 0; // 関数名で何を返すのかは伝わるので、結果はresultという変数名にする
+    // 変数のインライン化(playFor()を直接使う)
+    switch (aPerformance.play.type) {
+      case "tragedy":
+        result = 40000;
+        if (aPerformance.audience > 30) 
+          result += 1000 * (aPerformance.audience - 30);
+        break;
+      case "comedy":
+        result = 30000;
+        if (aPerformance.audience > 20) 
+          result += 500 * aPerformance.audience + 10000;
+        else result += 300 * aPerformance.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${aPerformance.play.type}`);
+    }
+    return result;
   }
 }
 

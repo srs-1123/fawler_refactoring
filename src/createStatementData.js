@@ -38,16 +38,7 @@ class PerformanceCalculator {
   }
 
   get amount() {
-    let result = 0; // 関数名で何を返すのかは伝わるので、結果はresultという変数名にする
-    // 変数のインライン化(playFor()を直接使う)
-    switch (this.play.type) {
-      case "tragedy":
-        throw `想定外の呼び出し`;
-      case "comedy":
-        throw `想定外の呼び出し`;
-      default:
-        throw new Error(`unknown type: ${this.play.type}`);
-    }
+    throw `サブクラスの責務`;
   }
 
   get volumeCredits() {

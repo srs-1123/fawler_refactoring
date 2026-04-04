@@ -20,17 +20,6 @@ function createStatementData(invoice, plays) {
   }
 
     // 関数の抽出
-  function amountFor(aPerformance) {
-    return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
-  }
-
-  // 関数の抽出
-  // 余計なコメントアウトは関数の抽出に伴い削除
-  function volumeCreditsFor(aPerformance) {
-    return new PerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits;
-  }
-
-    // 関数の抽出
   function totalVolumeCredits(data) {
     return data.performances
       .reduce((total, p) => total + p.volumeCredits, 0);

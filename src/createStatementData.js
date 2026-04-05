@@ -19,7 +19,7 @@ function createStatementData(invoice, plays) {
     return plays[aPerformance.playID];
   }
 
-    // 関数の抽出
+    // 関数の抽出 && パイプラインによるループの置き換え
   function totalVolumeCredits(data) {
     return data.performances
       .reduce((total, p) => total + p.volumeCredits, 0);
@@ -46,6 +46,7 @@ class PerformanceCalculator {
   }
 }
 
+// ポリモーフィズムによる条件記述の置き換え
 function CreatePerformanceCalculator(aPerformance, aPlay) {
   switch(aPlay.type) {
     case "tragedy" : return new TragedyCalculator(aPerformance, aPlay);
